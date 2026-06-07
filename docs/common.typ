@@ -44,7 +44,7 @@
 
 #let explanatory-note-title = subtitle-template(
   [Пояснительная записка],
-  sheets-count:[XX],
+  sheets-count:[82],
   document-code:[ВКРБ–09.03.04–10.19–XX–XX–81],
 )
 

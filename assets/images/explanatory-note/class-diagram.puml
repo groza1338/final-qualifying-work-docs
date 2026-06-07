@@ -1,0 +1,105 @@
+@startuml
+
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam ArrowColor black
+skinparam ClassBorderColor black
+skinparam ClassBackgroundColor white
+skinparam packageBorderColor black
+skinparam packageBackgroundColor white
+
+top to bottom direction
+
+package "Прикладной слой" {
+  class AuthService {
+    +login_with_telegram_initdata(...)
+    +logout(...)
+  }
+
+  class CrmIdentityService {
+    +ensure_crm_id_for_user(...)
+  }
+
+  class SalonService {
+    +get_info(...)
+  }
+
+  class ServicesService {
+    +get_all_service_groups(...)
+    +get_services(...)
+  }
+
+  class StaffService {
+    +get_staff_list(...)
+    +get_staff_schedule(...)
+    +get_available_times(...)
+  }
+
+  class VisitsService {
+    +current_visits(...)
+    +past_visits(...)
+    +create_visit(...)
+    +update_visit(...)
+    +cancel_visit(...)
+    +confirm_visit(...)
+  }
+}
+
+package "Инфраструктурный слой" {
+  class CrmAdapter {
+    -crm: CrmClient
+    -salon_id: int
+    +get_salon_for_front(...)
+    +search_crm_id(...)
+    +get_services(...)
+    +get_staff(...)
+    +get_available_times(...)
+    +create_visit(...)
+    +update_visit(...)
+    +cancel_visit(...)
+  }
+
+  class MessengerAdapter {
+    +get_bot_info(...)
+  }
+
+  class UserRepository {
+    +get_by_user_id(...)
+    +get_by_identity(...)
+    +get_or_create_by_identity(...)
+    +update_user(...)
+    +link_identity(...)
+  }
+
+  class SessionRepository {
+    +create(...)
+    +get(...)
+    +touch(...)
+    +delete(...)
+  }
+
+  class BotConfigRepository {
+    +get_bot_id()
+    +get_provider_config_value(...)
+  }
+}
+
+AuthService --> UserRepository
+AuthService --> SessionRepository
+AuthService --> BotConfigRepository
+AuthService --> CrmIdentityService
+CrmIdentityService --> UserRepository
+CrmIdentityService --> CrmAdapter
+SalonService --> CrmAdapter
+SalonService --> MessengerAdapter
+ServicesService --> CrmAdapter
+StaffService --> CrmAdapter
+VisitsService --> CrmAdapter
+VisitsService --> CrmIdentityService
+
+@enduml

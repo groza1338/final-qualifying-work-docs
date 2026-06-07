@@ -1,0 +1,48 @@
+@startuml
+
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam linetype ortho
+skinparam ArrowColor black
+skinparam EntityBorderColor black
+skinparam EntityBackgroundColor white
+
+left to right direction
+
+entity "users" as users {
+  * id : integer <<PK>>
+  --
+  * salon_id : integer
+  * user_id : varchar(64)
+  name : varchar(255)
+  last_name : varchar(255)
+  middle_name : varchar(255)
+  phone : varchar(64)
+  email : varchar(255)
+  crm_id : varchar(128)
+  * created_at : timestamp
+  * updated_at : timestamp
+  --
+  UNIQUE (salon_id, user_id)
+}
+
+entity "user_identities" as identities {
+  * id : integer <<PK>>
+  --
+  * salon_id : integer
+  * user_id : varchar(64)
+  * provider : varchar(32)
+  * external_user_id : varchar(128)
+  * created_at : timestamp
+  * updated_at : timestamp
+  --
+  UNIQUE (salon_id, provider, external_user_id)
+  UNIQUE (salon_id, user_id, provider)
+}
+
+users ||..o{ identities
+
+@enduml

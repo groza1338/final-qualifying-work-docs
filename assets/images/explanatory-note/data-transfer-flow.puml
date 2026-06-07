@@ -1,21 +1,18 @@
 @startuml
 
+skinparam monochrome true
+
 skinparam backgroundColor white
 skinparam shadowing false
 skinparam defaultFontName Arial
 skinparam defaultFontSize 15
-skinparam ArrowColor #334155
-skinparam LifeLineBorderColor #94A3B8
-skinparam ParticipantBorderColor #334155
 skinparam ParticipantBackgroundColor white
-skinparam DatabaseBorderColor #B45309
-skinparam DatabaseBackgroundColor #FFF7ED
 
-participant "Mini App" as mini
-participant "Backend" as backend #EAF3FF
+participant "Мини-приложение" as mini
+participant "Серверный модуль" as backend
 database "Redis" as redis
 database "PostgreSQL" as postgres
-participant "CRM" as crm
+participant "CRM-система" as crm
 
 mini -> backend : Создать запись\n(услуга, мастер, время)
 backend -> redis : Проверить сессию
@@ -26,5 +23,5 @@ backend -> crm : Подписанный запрос создания запис
 crm --> backend : Созданная запись и идентификатор клиента
 backend -> postgres : Сохранить связь с клиентом CRM
 postgres --> backend : Связь сохранена
-backend --> mini : Запись в едином формате Mini App
+backend --> mini : Запись в формате клиентского приложения
 @enduml

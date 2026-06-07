@@ -1,0 +1,56 @@
+@startuml
+
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam linetype ortho
+skinparam ArrowColor black
+skinparam ActorBorderColor black
+skinparam UsecaseBorderColor black
+skinparam UsecaseBackgroundColor white
+skinparam packageBorderColor black
+skinparam packageBackgroundColor white
+
+left to right direction
+
+actor "Клиент салона" as client
+actor "Telegram-бот" as bot
+actor "CRM-система" as crm
+actor "Системный\nпрограммист" as operator
+
+rectangle "Серверный модуль" {
+  usecase "Выполнить вход" as login
+  usecase "Управлять профилем" as profile
+  usecase "Получить каталог\nи расписание" as catalog
+  usecase "Создать запись" as create
+  usecase "Управлять созданной\nзаписью" as manage
+  usecase "Получить уведомление" as notify
+  usecase "Синхронизировать данные\nпользователя" as bot_user
+  usecase "Проверить состояние\nприложения" as health
+  usecase "Получить и изменить\nданные салона" as crm_data
+}
+
+client --> login
+client --> profile
+client --> catalog
+client --> create
+client --> manage
+client <-- notify
+
+bot --> bot_user
+bot <-- notify
+operator --> health
+
+catalog .> crm_data : <<include>>
+create .> crm_data : <<include>>
+manage .> crm_data : <<include>>
+crm --> crm_data
+
+login -[hidden]down-> profile
+profile -[hidden]down-> catalog
+catalog -[hidden]down-> create
+create -[hidden]down-> manage
+
+@enduml

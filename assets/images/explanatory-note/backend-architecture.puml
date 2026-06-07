@@ -1,36 +1,33 @@
 @startuml
 
 skinparam backgroundColor white
+skinparam monochrome true
 skinparam shadowing false
 skinparam defaultFontName Arial
 skinparam defaultFontSize 15
 skinparam componentStyle uml2
 skinparam linetype ortho
-skinparam ArrowColor #475569
-skinparam packageBorderColor #CBD5E1
-skinparam packageBackgroundColor #F8FAFC
-skinparam ComponentBorderColor #334155
 skinparam ComponentBackgroundColor white
 
 top to bottom direction
 
 package "API-слой" {
-  component "HTTP API routers\n\nAuth · Salon · Services · Staff\nVisits · Bot · Notifications · Health" as api #EAF3FF
+  component "Маршруты HTTP API\n\nAuth · Salon · Services · Staff\nVisits · Bot · Notifications · Health" as api
 }
 
 package "Прикладной слой" {
-  component "Прикладные сервисы\n\nAuthService · CrmIdentityService\nSalonService · ServicesService\nStaffService · VisitsService\nBotStatusService · NotificationService" as services #ECFDF5
+  component "Прикладные сервисы\n\nAuthService · CrmIdentityService\nSalonService · ServicesService\nStaffService · VisitsService\nBotStatusService · NotificationService" as services
 }
 
 package "Инфраструктурный слой" {
-  component "Адаптеры внешних API\n\nCrmAdapter\nMessengerAdapter" as adapters #FFF7ED
-  component "PostgreSQL-репозитории\n\nUserRepository" as postgres_repositories <<repository>> #FFF7ED
-  component "Redis-репозитории\n\nSessionRepository\nBotConfigRepository\nBotStatusRepository" as redis_repositories <<repository>> #FFF7ED
-  component "Публикация уведомлений\n\nNotificationStreamPublisher" as notifications #FFF7ED
+  component "Адаптеры внешних API\n\nCrmAdapter\nMessengerAdapter" as adapters
+  component "PostgreSQL-репозитории\n\nUserRepository" as postgres_repositories <<repository>>
+  component "Redis-репозитории\n\nSessionRepository\nBotConfigRepository\nBotStatusRepository" as redis_repositories <<repository>>
+  component "Публикация уведомлений\n\nNotificationStreamPublisher" as notifications
 }
 
 package "Схемы и доменная модель" {
-  component "Pydantic-схемы и ошибки\n\nFront schemas · CRM schemas\nDomain errors" as schemas #F5F3FF
+  component "Pydantic-схемы и ошибки\n\nКлиентские схемы · Схемы CRM\nДоменные ошибки" as schemas
 }
 
 api -down-> services : вызывает
