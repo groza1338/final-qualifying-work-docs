@@ -1,0 +1,45 @@
+@startuml
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam componentStyle uml2
+skinparam linetype ortho
+skinparam ArrowColor #475569
+skinparam packageBorderColor #CBD5E1
+skinparam packageBackgroundColor #F8FAFC
+skinparam ComponentBorderColor #334155
+skinparam ComponentBackgroundColor white
+
+top to bottom direction
+
+package "API-слой" {
+  component "HTTP API routers\n\nAuth · Salon · Services · Staff\nVisits · Bot · Notifications · Health" as api #EAF3FF
+}
+
+package "Прикладной слой" {
+  component "Прикладные сервисы\n\nAuthService · CrmIdentityService\nSalonService · ServicesService\nStaffService · VisitsService\nBotStatusService · NotificationService" as services #ECFDF5
+}
+
+package "Инфраструктурный слой" {
+  component "Адаптеры внешних API\n\nCrmAdapter\nMessengerAdapter" as adapters #FFF7ED
+  component "PostgreSQL-репозитории\n\nUserRepository" as postgres_repositories <<repository>> #FFF7ED
+  component "Redis-репозитории\n\nSessionRepository\nBotConfigRepository\nBotStatusRepository" as redis_repositories <<repository>> #FFF7ED
+  component "Публикация уведомлений\n\nNotificationStreamPublisher" as notifications #FFF7ED
+}
+
+package "Схемы и доменная модель" {
+  component "Pydantic-схемы и ошибки\n\nFront schemas · CRM schemas\nDomain errors" as schemas #F5F3FF
+}
+
+api -down-> services : вызывает
+services -down-> adapters : обращается к внешним API
+services -down-> postgres_repositories : хранит пользователей
+services -down-> redis_repositories : управляет временным состоянием
+services -down-> notifications : публикует уведомления
+adapters -down-> schemas : преобразует ответы CRM
+postgres_repositories -down-> schemas
+redis_repositories -down-> schemas
+notifications -down-> schemas
+@enduml

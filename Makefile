@@ -1,8 +1,13 @@
 TYPST ?= typst
+PLANTUML ?= plantuml
 
 DOCS := explanatory-note technical-assignment system-programmers-guide
+EXPLANATORY_NOTE_DIAGRAMS := \
+	assets/images/explanatory-note/system-context.puml \
+	assets/images/explanatory-note/backend-architecture.puml \
+	assets/images/explanatory-note/data-transfer-flow.puml
 
-.PHONY: all clean $(DOCS) watch-explanatory-note watch-technical-assignment watch-system-programmers-guide
+.PHONY: all clean diagrams $(DOCS) watch-explanatory-note watch-technical-assignment watch-system-programmers-guide
 
 all: $(DOCS)
 
@@ -11,6 +16,9 @@ $(DOCS): build
 
 build:
 	mkdir -p build
+
+diagrams:
+	$(PLANTUML) -tsvg $(EXPLANATORY_NOTE_DIAGRAMS)
 
 watch-technical-assignment: build
 	$(TYPST) watch --root . docs/technical-assignment.typ build/technical-assignment.pdf

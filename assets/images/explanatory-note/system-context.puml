@@ -1,0 +1,36 @@
+@startuml
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 16
+skinparam componentStyle uml2
+skinparam ArrowColor #334155
+skinparam ComponentBorderColor #334155
+skinparam ComponentBackgroundColor white
+skinparam DatabaseBorderColor #B45309
+skinparam DatabaseBackgroundColor #FFF7ED
+skinparam packageBorderColor #CBD5E1
+skinparam packageBackgroundColor #F8FAFC
+
+left to right direction
+
+component "Telegram-бот" as bot
+component "Mini App" as mini
+
+package "Система онлайн-записи" {
+  component "Backend-модуль" as backend #EAF3FF
+  database "PostgreSQL" as postgres
+  database "Redis" as redis
+}
+
+component "CRM-система" as crm <<внешняя система>>
+component "Messenger API" as messenger <<внешний сервис>>
+
+bot -down-> mini : запуск
+mini --> backend : HTTP API
+backend ..> crm : CRM API
+backend ..> messenger : сведения о боте
+backend ..> postgres : профили и внешние\nидентичности
+backend ..> redis : сессии, кэш,\nстатусы, уведомления
+@enduml
