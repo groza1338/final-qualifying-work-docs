@@ -2,13 +2,13 @@
   fqw-main-task-title-sheet, fqw-main-title-sheet, fqw-template-subtitle-sheet, person,
 )
 
-#let author = person("Коломойцев", "Илья", "Сергеевич", group: [ПрИн-466])
-#let scientific-supervisor = person("Матюшечкин", "Дмитрий", "Сергеевич", degree: [к.т.н.])
+#let author = person("Гвоздков", "Сергей", "Алексеевич", group: [ПрИн-466])
+#let scientific-supervisor = person("Гилка", "Вадим", "Викторович", degree: [к.т.н.])
 #let approver = person("Сычёв", "Олег", "Александрович", status: [и. о. зав. кафедрой])
 #let inspector = person("Кузнецова", "Агнесса", "Сергеевна")
 #let topic-of-work = (
-  [Компьютерное моделирование программно-аппаратных],
-  [гидроакустических приёмопередатчиков для их виртуальных испытаний],
+  [Разработка унифицированного модуля для передачи данных],
+  [между CRM-системой и мини-приложением в Telegram],
 )
 
 #let main-title = fqw-main-title-sheet(
@@ -17,7 +17,7 @@
   supervisor: scientific-supervisor,
   inspector: inspector,
   approver: approver,
-  document-code: [ВКРБ-09.03.04-10.19-03-26],
+  document-code: [ВКРБ-09.03.04-10.19-XX-26],
 )
 
 #main-title
