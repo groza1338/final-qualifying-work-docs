@@ -45,7 +45,7 @@
 #let explanatory-note-title = subtitle-template(
   [Пояснительная записка],
   sheets-count:[XX],
-  document-code:[ВКРБ–09.03.04–10.19–**–**–81],
+  document-code:[ВКРБ–09.03.04–10.19–XX–XX–81],
 )
 
 #explanatory-note-title
@@ -53,7 +53,7 @@
 #let technical-assignment-title = subtitle-template(
   [Техническое задание],
   sheets-count:[XX],
-  document-code:[ВКРБ–09.03.04–10.19–**–**–91],
+  document-code:[ВКРБ–09.03.04–10.19–XX–XX–91],
 )
 
 #technical-assignment-title
