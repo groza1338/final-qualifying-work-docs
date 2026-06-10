@@ -14,8 +14,12 @@
   #fqw-indent-before-text
 ]
 
-#let en-bibliography(source) = bibliography(
-  source,
-  title: [Список использованных источников],
-  style: "gost-r-7-0-100-2018-numeric-appearance.csl",
-)
+#let en-bibliography(source) = [
+  #pagebreak()
+  #set par(justify: false)
+  #bibliography(
+    source,
+    title: [Список использованных источников],
+    style: "gost-r-7-0-100-2018-numeric-appearance.csl",
+  )
+]

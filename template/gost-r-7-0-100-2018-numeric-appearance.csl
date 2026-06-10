@@ -225,7 +225,7 @@
     _______________________________________________________________________________ -->
 
   <macro name="citation-number">
-    <text variable="citation-number" suffix=".&#9;"/>
+    <text variable="citation-number" suffix=".&#160;"/>
   </macro>
   <macro name="publisher">
     <group delimiter=" : " prefix=" " suffix=", ">
