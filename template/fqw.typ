@@ -128,6 +128,7 @@
 
 #let fqw-outline() = [
   #heading(numbering: none, outlined: false)[Содержание]
+  #set outline.entry(fill: none)
   #outline(title: none, depth: 3, indent: 0pt)
   #pagebreak()
 ]
@@ -400,11 +401,21 @@
   #pagebreak()
   #counter("fqw-appendix").step()
   #counter("fqw-subappendix").update(0)
-  #align(center)[
-    Приложение #context fqw-appendix-letter(counter("fqw-appendix").get().first())
-    #linebreak()
-    #title
-  ]
+  #context {
+    let number = fqw-appendix-letter(counter("fqw-appendix").get().first())
+
+    show heading: it => []
+    heading(numbering: none, outlined: true)[Приложение #number - #title]
+
+    v(1fr)
+    align(center)[
+      #set par(justify: false, first-line-indent: 0pt)
+      Приложение #number
+      #linebreak()
+      #title
+    ]
+    v(1fr)
+  }
 ]
 
 #let fqw-appendix-group(number: 1) = [
