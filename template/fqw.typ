@@ -1,4 +1,4 @@
-#let fqw-default-document-code = "ВКРБ-09.03.04-10.19-XX-26-81"
+#let fqw-default-document-code = "ВКРБ-09.03.04-10.19-03-26-81"
 
 #let fqw-fontsize-in-em = 1.25em
 #let fqw-leading = 1.06em

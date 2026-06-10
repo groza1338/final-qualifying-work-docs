@@ -19,7 +19,7 @@
   supervisor: scientific-supervisor,
   inspector: inspector,
   approver: approver + (date: submission-date),
-  document-code: [ВКРБ-09.03.04-10.19-XX-26],
+  document-code: [ВКРБ-09.03.04-10.19-03-26],
 )
 
 #main-title
@@ -55,7 +55,7 @@
 #let explanatory-note-title = subtitle-template(
   [Пояснительная записка],
   sheets-count:[86],
-  document-code:[ВКРБ–09.03.04–10.19–XX–XX–81],
+  document-code:[ВКРБ–09.03.04–10.19–03–26–81],
 )
 
 #explanatory-note-title
@@ -63,7 +63,7 @@
 #let technical-assignment-title = subtitle-template(
   [Техническое задание],
   sheets-count:[XX],
-  document-code:[ВКРБ–09.03.04–10.19–XX–XX–91],
+  document-code:[ВКРБ–09.03.04–10.19–03–26–91],
 )
 
 #technical-assignment-title
