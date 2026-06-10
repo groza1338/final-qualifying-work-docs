@@ -52,7 +52,7 @@
 ///
 /// Returns:
 /// - A `text` element with a font size of 7.5pt containing the provided `body`.
-#let caption-text(body) = text(size: 7.5pt)[#body]
+#let caption-text(body) = text(size: 7.5pt)[#if body != [] [(#body)]]
 #caption-text[Пример подписи]
 
 == `#field`
@@ -71,14 +71,14 @@
 ///
 /// Returns:
 /// - A full-width `box` containing the underlined value area and its caption.
-#let field(value: [], caption: [], align-value: center) = box(width: 100%)[
+#let field(value: [], caption: [], align-value: center, horizontal-inset: 1em) = box(width: 100%)[
   #set par(
     spacing: 0pt,
   )
   #box(
     width: 100%,
     height: if value == [] { 10pt } else { auto },
-    inset: (bottom: 2pt, left: 1em, right: 1em),
+    inset: (bottom: 2pt, left: horizontal-inset, right: horizontal-inset),
     stroke: (bottom: 0.5pt),
   )[
     #align(align-value + horizon)[#value]
@@ -89,6 +89,21 @@
 #field(value: [Иванов И. И.], caption: [фамилия, имя, отчество])
 
 == `#print-date`
+
+#let month-names = (
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+)
 
 /// Creates a three-part date layout for title-page approval blocks.
 ///
@@ -109,10 +124,10 @@
   )[
     \"#field(value: [#if d != none { d.day() }])\"
   ][
-    #field(value: [#if d != none { d.month() }])
+    #field(value: [#if d != none { month-names.at(d.month() - 1) }])
   ][
     #if d != none {
-      field(value: [#d.year()~~~г.])
+      field(value: [#d.year()~г.])
     } else {
       [20 #box(width: 1fr)[#field()] г.]
     }
@@ -340,9 +355,9 @@
       columns: (1fr, 1fr),
       column-gutter: 8pt,
     )[
-      #field(value: [], caption: [(подпись)])
+      #field(value: [], caption: [подпись])
     ][
-      #field(value: name, caption: [(инициалы, фамилия)])
+      #field(value: name, caption: [инициалы, фамилия])
     ]
   ][
     #block(width: 80%)[#print-date(date)]
@@ -392,9 +407,9 @@
   ][
     #position
   ][
-    #field(value: signature-date, caption: [(подпись)])
+    #field(value: signature-date, caption: [подпись])
   ][
-    #field(value: name, caption: [(инициалы, фамилия)])
+    #field(value: name, caption: [инициалы, фамилия])
   ]
 ][
   #block(width: 80%)[#print-date(date)]
@@ -502,7 +517,7 @@
     #grid(
       columns: 3,
       column-gutter: 6pt,
-    )[ к ][ #field(value: work-kind, caption: [(наименование вида работы)]) ][ на тему ]
+    )[ к ][ #field(value: work-kind, caption: [наименование вида работы]) ][ на тему ]
 
     // Topic
     #print-field-rows(
@@ -584,8 +599,9 @@
 /// - consultants: Consultant records with `section` and `person` fields.
 /// - ministry: The ministry name shown at the top of the page.
 /// - university: The university name shown below the ministry.
-/// - faculty: The faculty name rendered in the labeled faculty field.
+/// - department: The department name rendered in the labeled department field.
 /// - department-code: The department code shown in the student metadata row.
+/// - university-directive: The university directive date and number.
 /// - work-kind: The work type shown between "к" and "на тему".
 ///
 /// Returns:
@@ -607,8 +623,9 @@
   // Page title parameters
   ministry: default-ministry,
   university: default-university,
-  faculty: default-faculty,
+  department: default-department,
   department-code: [10.19],
+  university-directive: (date: none, number: []),
   work-kind: [выпускную квалификационную работу бакалавра],
 ) = [
   #show: fqw-base
@@ -621,8 +638,8 @@
   ]
   #delimiter
 
-  // Faculty
-  #labeled-field([Факультет], value: faculty)
+  // Department
+  #labeled-field([Кафедра], value: department)
   #delimiter
 
   // Approver
@@ -645,7 +662,7 @@
     #grid(
       columns: 3,
       column-gutter: 6pt,
-    )[к][#field(value: work-kind, caption: [(наименование вида работы)])][на тему]
+    )[к][#field(value: work-kind, caption: [наименование вида работы])][на тему]
   ][
     // Author
     #labeled-field(
@@ -673,14 +690,22 @@
       }
     }
   ][
-    // Work approved
-    #grid(
-      columns: (auto, 3fr, 1.5fr),
-      column-gutter: 0.25fr,
-    )[Утверждена приказом по университету][#print-date(none)][#labeled-field([№])]
+  // Work approved
+  #grid(
+    columns: (auto, 3fr, auto, 1.1fr),
+    column-gutter: (1.8em, 0.8em, 0pt),
+  )[
+    Утверждена приказом по университету
+  ][
+    #print-date(university-directive.date)
+  ][
+    №
+  ][
+    #field(value: university-directive.number, horizontal-inset: 0pt)
+  ]
   ][
     // Date of submission of work
-    #labeled-field([Срок представления готовой работы (проекта)], caption: [(дата, подпись студента)])
+    #labeled-field([Срок представления готовой работы (проекта)], caption: [дата, подпись студента])
   ]
   #delimiter
 
