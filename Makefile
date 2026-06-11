@@ -8,7 +8,8 @@ EXPLANATORY_NOTE_DIAGRAMS := \
 	assets/images/explanatory-note/data-transfer-flow.puml \
 	assets/images/explanatory-note/use-case.puml \
 	assets/images/explanatory-note/class-diagram.puml \
-	assets/images/explanatory-note/database-er.puml
+	assets/images/explanatory-note/database-er.puml \
+	assets/images/technical-assignment/use-case.puml
 
 .PHONY: all clean diagrams $(DOCS) watch-explanatory-note watch-technical-assignment watch-system-programmers-guide
 
