@@ -74,6 +74,7 @@
 #let field(value: [], caption: [], align-value: center, horizontal-inset: 1em) = box(width: 100%)[
   #set par(
     spacing: 0pt,
+    justify: false,
   )
   #box(
     width: 100%,
@@ -147,14 +148,14 @@
 ///
 /// Returns:
 /// - A grid containing the label and the corresponding underlined field.
-#let labeled-field(label, value: [], caption: [], value-width: 1fr) = grid(
+#let labeled-field(label, value: [], caption: [], value-width: 1fr, ..field-parameters) = grid(
   columns: (auto, value-width),
   column-gutter: 8pt,
   align: (left, horizon),
 )[
   #label
 ][
-  #field(value: value, caption: caption)
+  #field(value: value, caption: caption, ..field-parameters.named())
 ]
 #labeled-field(
   [Группа],
@@ -276,6 +277,7 @@
 /// - Content containing the optional title and the rendered field rows.
 #let print-field-rows(
   field-align: left,
+  field-horizontal-inset: 1em,
   numberic: false,
   title: none,
   ..rows,
@@ -286,10 +288,18 @@
       grid(columns: (1fr, 10fr))[
         #(i + 1))
       ][
-        #field(value: row, align-value: field-align)
+        #field(
+          value: row,
+          align-value: field-align,
+          horizontal-inset: field-horizontal-inset,
+        )
       ]
     } else {
-      field(value: row, align-value: field-align)
+      field(
+        value: row,
+        align-value: field-align,
+        horizontal-inset: field-horizontal-inset,
+      )
     }
   }
 }
@@ -394,12 +404,12 @@
   position-caption: [],
 ) = grid(
   columns: (1fr,),
-  row-gutter: 1em,
+  row-gutter: 0.35em,
   align: center,
 )[
   #grid(
     columns: (1fr, 1fr),
-    row-gutter: 1em,
+    row-gutter: 0.35em,
     column-gutter: 1em,
     align: center,
   )[
@@ -611,6 +621,7 @@
   topic: none,
   task-from-scientific-supervisor: warning[Задание, выданное научным руководителем кафедры «ПОАС»],
   contents-of-explanatory-note: (),
+  contents-min-rows: 15,
   graphical-meterials: (),
   // Persons
   author: none,
@@ -625,11 +636,30 @@
   university: default-university,
   department: default-department,
   department-code: [10.19],
+  document-code: [],
   university-directive: (date: none, number: []),
   work-kind: [выпускную квалификационную работу бакалавра],
 ) = [
   #show: fqw-base
-  #let delimiter = v(2em)
+  #set page(
+    margin: (
+      top: 20mm,
+      bottom: 20mm,
+      left: 30mm,
+      right: 10mm,
+    ),
+    header: context {
+      if counter(page).get().first() > 2 {
+        align(center)[#document-code]
+      }
+    },
+    footer: context {
+      if counter(page).get().first() > 2 {
+        align(center)[#counter(page).display("1")]
+      }
+    },
+  )
+  #let delimiter = v(0.8em)
 
   // University
   #align(center)[
@@ -643,28 +673,34 @@
   #delimiter
 
   // Approver
-  #pad(left: 50%)[
-    #approval-block-2(
-      name: person-field(approver, "reverse-short"),
-      position: person-field(approver, "status", default: warning([Должность])),
-      date: person-field(approver, "date", default: none),
-    )
+  #v(10pt)
+  #move(dx: -10pt)[
+    #pad(left: 50%)[
+      #approval-block-2(
+        name: person-field(approver, "reverse-short"),
+        position: person-field(approver, "status", default: warning([Должность])),
+        date: person-field(approver, "date", default: none),
+      )
+    ]
   ]
+  #v(7pt)
   #delimiter
 
   // Title
+  #align(center)[
+    #move(dx: -7pt)[#strong(upper([задание]))]
+  ]
   #grid(
     columns: 1,
     row-gutter: default-spacing,
   )[
-    #align(center)[#strong(upper([задание]))]
-  ][
     #grid(
-      columns: 3,
+      columns: (auto, 1fr),
       column-gutter: 6pt,
-    )[к][#field(value: work-kind, caption: [наименование вида работы])][на тему]
+    )[на][#field(value: work-kind, caption: [наименование вида работы])]
   ][
     // Author
+    #v(8pt)
     #labeled-field(
       [Студент],
       value: person-field(author, "full"),
@@ -691,6 +727,7 @@
     }
   ][
   // Work approved
+  #v(-8pt)
   #grid(
     columns: (auto, 3fr, auto, 1.1fr),
     column-gutter: (1.8em, 0.8em, 0pt),
@@ -710,19 +747,25 @@
   #delimiter
 
   // Task from the supervisor
-  #print-field-rows(
-    gutter: default-spacing,
-    title: [Исходные данные для выполнения работы (проекта)],
-    ..makeRows(task-from-scientific-supervisor, minRowsCount: 2),
-  )
+  #block[
+    #set par(leading: 0.35em)
+    #print-field-rows(
+      field-horizontal-inset: 0pt,
+      title: [Исходные данные для выполнения работы (проекта)],
+      ..makeRows(task-from-scientific-supervisor, minRowsCount: 2),
+    )
+  ]
   #delimiter
 
   // Contents of the explanatory note
-  #print-field-rows(
-    gutter: default-spacing,
-    title: [Содержание основной части пояснительной записки],
-    ..makeRows(contents-of-explanatory-note, minRowsCount: 15),
-  )
+  #block[
+    #set par(leading: 0.35em)
+    #print-field-rows(
+      field-horizontal-inset: 0pt,
+      title: [Содержание основной части пояснительной записки],
+      ..makeRows(contents-of-explanatory-note, minRowsCount: contents-min-rows),
+    )
+  ]
   #delimiter
 
   // Graphic material
@@ -868,5 +911,194 @@
   ][
     // City, year
     #align(center)[#city #year г.]
+  ]
+]
+
+#let default-university-short = [ВолгГТУ]
+#let default-university-president = [Профессору д.х.н. Навроцкому А.В.]
+#let default-program = (code: [09.03.04], name: [Программная инженерия])
+#let default-type-of-program = [очное]
+#let default-plagiarism-detection-system = [Антиплагиат]
+
+#let fqw-request-to-post-work(
+  topic: [],
+  author: none,
+  author-full-gen: [],
+  supervisor: none,
+  restrictions: none,
+  date: [],
+  reason: [которые имеют действительную или потенциальную коммерческую ценность в силу неизвестности их третьим лицам.],
+  university-short: default-university-short,
+  university-president: default-university-president,
+  faculty: default-faculty,
+  program: default-program,
+  type-of-program: default-type-of-program,
+) = [
+  #show: fqw-base
+  #set page(
+    margin: (
+      top: 20mm,
+      bottom: 20mm,
+      left: 20mm,
+      right: 15mm,
+    ),
+  )
+  #set par(justify: true, first-line-indent: (amount: 1.25cm, all: true), leading: 1.06em, spacing: 1.06em)
+  #grid(columns: 1, row-gutter: (4em, 1em, 2em))[
+    #pad(left: 35%)[
+      Ректору #university-short
+
+      #university-president
+
+      #labeled-field(
+        [от студента],
+        value: author-full-gen,
+        caption: [фамилия, имя, отчество полностью],
+        align-value: left,
+        horizontal-inset: 0pt,
+      )
+      #labeled-field([Факультет], value: lower(faculty), align-value: left, horizontal-inset: 0pt)
+      #labeled-field([Направление], value: [#program.code #program.name], align-value: left, horizontal-inset: 0pt)
+      #labeled-field([группа], value: person-field(author, "group"), align-value: left, horizontal-inset: 0pt)
+      #labeled-field([форма обучения], value: type-of-program, align-value: left, horizontal-inset: 0pt)
+    ]
+  ][
+    #align(center)[#upper([заявление])]
+  ][
+    Прошу Вас разместить написанную мною выпускную квалификационную
+    работу бакалавра (далее ВКР) на тему
+
+    #align(center)[
+      #set par(justify: false, first-line-indent: 0pt, spacing: 0pt)
+      #for (i, row) in makeRows(topic).enumerate() {
+        let caption = if i == 0 [название работы] else []
+        field(value: row, caption: caption)
+      }
+    ]
+  ][
+    #let degree = if type(supervisor) == dictionary and "degree" in supervisor [
+      ~#person-field(supervisor, "degree")
+    ] else []
+    #set par(first-line-indent: 0pt)
+    #labeled-field([Научный руководитель], value: person-field(supervisor, "full") + degree)
+  ][
+    в файловом хранилище ВолгГТУ, расположенном по адресу _http:\/\/dump.vstu.ru_
+  ][
+    #if restrictions == none [
+      в полном объеме.
+    ] else [
+      за исключением разделов (страниц)
+
+      #let rows-of-page-info = makeRows(restrictions.page)
+      #let rows-of-content-info = makeRows(restrictions.content)
+
+      #labeled-field([номера разделов (страниц)], value: rows-of-page-info.at(0, default: []))
+      #for (i, row) in rows-of-page-info.enumerate() { if i != 0 { field(value: row) } }
+
+      #labeled-field(
+        [содержащие],
+        value: rows-of-content-info.at(0, default: []),
+        caption: [
+          указать что именно: производственные; технические: экономические: организационные сведения;
+          результаты интеллектуальной деятельности в научно-технической сфере;
+          сведения о способах осуществления профессиональной деятельности
+        ],
+        align-value: left,
+      )
+      #for (i, row) in rows-of-content-info.enumerate() { if i != 0 { field(value: row, align-value: left) } }
+    ]
+  ][
+    #if restrictions != none [#reason]
+  ][
+    #set par(first-line-indent: 0pt)
+    #pad(left: 3em)[
+      #grid(columns: (12em, 12em), row-gutter: 1.5em)[
+        Дата
+      ][#field(value: date)][
+        Подпись
+      ][#field()][
+        Виза руководителя ВКР
+      ][#field()]
+    ]
+  ]
+]
+
+#let fqw-declaration-of-professional-ethics(
+  topic: [],
+  author: none,
+  author-full-gen: [],
+  supervisor: none,
+  department-chair: none,
+  department-chair-short-dat: [],
+  date: [],
+  university-short: default-university-short,
+  faculty-short: [ФЭВТ],
+  program: default-program,
+  plagiarism-detection-system: default-plagiarism-detection-system,
+) = [
+  #show: fqw-base
+  #set page(
+    margin: (
+      top: 20mm,
+      bottom: 20mm,
+      left: 17.5mm,
+      right: 15mm,
+    ),
+  )
+  #set par(justify: true, first-line-indent: (amount: 1.25cm, all: true), leading: 1.06em, spacing: 1.06em)
+  #grid(columns: 1, row-gutter: (4em, 1em, 2em))[
+    #pad(left: 50%)[
+      #person-field(department-chair, "status", default: [Зав. кафедрой]) ПОАС
+
+      #department-chair-short-dat
+
+      #labeled-field([от студента группы], value: person-field(author, "group"), align-value: left, horizontal-inset: 0pt)
+      #field(value: author-full-gen)
+      #field()
+      #field()
+    ]
+  ][
+    #align(center)[#upper([заявление])]
+  ][
+    #align(center)[#upper([
+      о соблюдении профессиональной этики \
+      при написании выпускной \
+      квалификационной работы
+    ])]
+  ][
+    #set par(first-line-indent: 0pt)
+    #labeled-field([Я], value: person-field(author, "full"))
+    #labeled-field([студент группы], value: person-field(author, "group"), value-width: 10em)
+    обучающийся по направлению #program.code «#program.name», #faculty-short
+    в #university-short, заявляю, что в моей ВКР на тему:
+
+    #align(center)[
+      #set par(justify: false, first-line-indent: 0pt, spacing: 0pt)
+      #for row in makeRows(topic) {
+        field(value: row)
+      }
+    ]
+
+    #set par(justify: true, first-line-indent: (amount: 1.25cm, all: true), leading: 1.06em, spacing: 1.06em)
+    представленной в Государственную экзаменационную комиссию для публичной защиты,
+    соблюдены правила профессиональной этики, не допускающие наличия плагиата,
+    фальсификации данных и ложного цитирования при написании выпускных квалификационных работ.
+
+    Все прямые заимствования из печатных и электронных источников,
+    а также ранее защищенных письменных работ, кандидатских и докторских диссертаций
+    имеют соответствующие ссылки.
+
+    Я ознакомлен с действующим в ВолгГТУ порядком проведения государственной итоговой аттестации,
+    положением о порядке проверки ВКР на объем заимствования.
+  ][
+    #set par(first-line-indent: 0pt)
+    #labeled-field([_подпись студента_], value: [(#person-field(author, "short"))], align-value: right)
+
+    #pad(left: 25em)[#labeled-field([_дата_], value: date, value-width: 6em)]
+    Работа представлена для проверки уникальности текста в системе «#plagiarism-detection-system».
+  ][
+    #labeled-field([_дата предоставления ВКР_], value: date, value-width: 6em)
+
+    #labeled-field([_подпись руководителя ВКР_], value: [(#person-field(supervisor, "short"))], align-value: right)
   ]
 ]

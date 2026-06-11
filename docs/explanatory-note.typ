@@ -1,12 +1,19 @@
 #import "../template/fqw.typ": *
 #import "../template/explanatory-note.typ": *
-#import "common.typ": explanatory-note-title
+#import "common.typ": main-title, task-title, explanatory-note-title
 
+#main-title
+#pagebreak()
+#task-title
+#pagebreak()
 #explanatory-note-title
 
-#show: fqw-document
+#show: fqw-base
+#show: fqw-text-settings
 
-#fqw-header-abstract()
+#block(spacing: fqw-baseline)[#h(1.25cm)Аннотация]
+#fqw-indent-before-text
+#v(1em)
 <sec:annotation>
 
 Настоящий документ является пояснительной запиской к выпускной
@@ -30,7 +37,7 @@ Telegram-ботом и мини-приложением Telegram. В работе
 ошибок и диагностики. Разработанный модуль реализован на языке Python с
 использованием FastAPI, PostgreSQL и Redis.
 
-Документ включает в себя страниц~--~86, рисунков~--~6,
+Документ включает в себя страниц~--~89, рисунков~--~6,
 таблиц~--~10, формул~--~4, приложений~--~3.
 
 Ключевые слова:
@@ -48,6 +55,8 @@ Redis,
 унифицированная передача данных.
 
 #pagebreak()
+
+#show: fqw-document
 
 #fqw-outline()
 
