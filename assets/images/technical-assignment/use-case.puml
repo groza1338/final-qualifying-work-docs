@@ -1,0 +1,66 @@
+@startuml
+
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam linetype ortho
+skinparam ArrowColor black
+skinparam ActorBorderColor black
+skinparam UsecaseBorderColor black
+skinparam UsecaseBackgroundColor white
+skinparam packageBorderColor black
+skinparam packageBackgroundColor white
+
+left to right direction
+
+actor "Клиент салона" as client
+actor "Telegram-бот" as bot
+actor "CRM-система" as crm
+actor "Messenger API" as messenger
+actor "Системный\nпрограммист" as admin
+
+rectangle "Унифицированный серверный модуль" {
+  usecase "Выполнить вход\nчерез Telegram WebApp" as login
+  usecase "Управлять профилем\nпользователя" as profile
+  usecase "Просмотреть сведения\nо салоне" as salon
+  usecase "Получить услуги\nи мастеров" as services
+  usecase "Выбрать свободное\nвремя" as slots
+  usecase "Создать запись" as create
+  usecase "Перенести запись" as move
+  usecase "Подтвердить запись" as confirm
+  usecase "Отменить запись" as cancel
+  usecase "Получить записи\nпользователя" as visits
+  usecase "Синхронизировать\nпользователя бота" as bot_user
+  usecase "Опубликовать\nуведомление" as notify
+  usecase "Проверить состояние\nприложения" as health
+}
+
+client --> login
+client --> profile
+client --> salon
+client --> services
+client --> slots
+client --> create
+client --> move
+client --> confirm
+client --> cancel
+client --> visits
+
+bot --> bot_user
+bot <-- notify
+admin --> health
+
+salon --> crm
+services --> crm
+slots --> crm
+create --> crm
+move --> crm
+confirm --> crm
+cancel --> crm
+visits --> crm
+login --> messenger
+bot_user --> messenger
+
+@enduml
